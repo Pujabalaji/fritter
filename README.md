@@ -286,7 +286,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if username or password is in the wrong format
 - `409` if username is already in use
 
-#### `PUT /api/users` - Update a user's profile
+#### `PUT /api/users` - Update a user's account
 
 **Body** _(no need to add fields that are not being changed)_
 
@@ -313,3 +313,79 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+
+#### `POST /api/profile/:account` - Add a profile to account
+
+**Body**
+
+- `profileName` _{string}_ - The profile name
+
+**Throws**
+
+- `400` if account not given
+- `404` if account does not exist
+
+**Returns**
+
+- A success message
+
+#### `GET /api/profile/:account` - View all profiles in account
+
+**Returns**:
+- A success message
+
+**Throws**
+
+- `400` if account not given
+- `404` if account does not exist
+
+#### `DELETE /api/profile?account=account&profile=profileName` - Delete profileName from account
+
+**Returns**:
+- A success message
+
+**Throws**
+
+- `404` if account or profileName does not exist
+
+#### `GET /api/bookmarks/:profile=profileName` - Get bookmarks bookmarked by profileName
+
+**Returns**
+
+- An array of freets bookmarked by profile name `profileName`
+
+**Throws**
+
+- `400` if `profileName` is not given
+- `404` if `profileName` is not a recognized profile name
+
+#### `GET /api/bookmarks/:profile=profileName?search=keyword` - Get bookmarks bookmarked by profileName containing keyword
+
+**Returns**
+
+- An array of freets bookmarked by profile name `profileName` containing `keyword`
+
+**Throws**
+
+- `400` if `profileName` is not given
+- `404` if `profileName` is not a recognized profile name
+
+#### `POST /api/bookmark?profileName=profileName&freetId=freetId` - Bookmark freetId into profileName
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `404` if freetId or profileName does not exist
+
+#### `DELETE /api/bookmark?profileName=profileName&freetId=freetId` - Delete freetId bookmark from profileName
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `404` if freetId or profileName does not exist

@@ -33,7 +33,7 @@ const isValidUsername = (req: Request, res: Response, next: NextFunction) => {
   if (!usernameRegex.test(req.body.username)) {
     res.status(400).json({
       error: {
-        username: 'Username must be a nonempty alphanumeric string.'
+        username: 'Username in body must be a nonempty alphanumeric string.'
       }
     });
     return;
@@ -153,6 +153,23 @@ const isAuthorExists = async (req: Request, res: Response, next: NextFunction) =
   next();
 };
 
+/**
+ * Checks if username in parameter exists
+ */
+const isParameterUsernameExists = async(req:Request, res: Response, next: NextFunction) => {
+  const user = await UserCollection.findOneByUsername(req.params.username as string);
+
+  if (!user) {
+    res.status(404).json({
+      error: {
+        username: 'There is no account with this username'
+      }
+    });
+    return;
+  }
+  next();
+};
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
@@ -161,5 +178,6 @@ export {
   isAccountExists,
   isAuthorExists,
   isValidUsername,
-  isValidPassword
+  isValidPassword,
+  isParameterUsernameExists
 };
