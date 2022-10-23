@@ -3,6 +3,10 @@ import express from 'express';
 import ProfileCollection from '../profile/collection';
 import BookmarkCollection from './collection';
 import * as util from './util';
+import * as userValidator from '../user/middleware';
+import * as freetValidator from '../freet/middleware';
+import * as profileValidator from '../profile/middleware';
+import * as bookmarkValidator from '../bookmark/middleware';
 
 const router = express.Router();
 
@@ -39,7 +43,8 @@ export {router as bookmarkRouter};
       res.status(200).json(response);
     },
     [
-    //   userValidator.isQueryUsernameExists
+      userValidator.isUserLoggedIn,
+      profileValidator.isQueryProfileNameExistsForCurrentUser
     ],
     async (req: Request, res: Response) => {
       const profileBookmarks = await BookmarkCollection.findAllByProfileNameAndUserId(req.query.profileName as string, req.session.userId as string);
@@ -55,12 +60,15 @@ export {router as bookmarkRouter};
  *
  * @return {BookmarkResponse} - The created freet
  * @throws {403} - If the user is not logged in
+ * @throws {400} - If freetId not provided in body
+ * @throws {404} - If freetId is not a valid freet
  */
 router.post(
     '/',
     [
-    //   userValidator.isUserLoggedIn,
-    //   freetValidator.isValidFreetContent
+      userValidator.isUserLoggedIn,
+      profileValidator.isBodyProfileNameExistsForCurrentUser,
+      freetValidator.isFreetIdInBodyExists
     ],
     async (req: Request, res: Response) => {
       console.log("Making Bookmark POST Request in Router");
@@ -87,14 +95,13 @@ router.post(
    * @return {string} - A success message
    * @throws {403} - If the user is not logged in or is not the author of
    *                 the freet
-   * @throws {404} - If the freetId is not valid
+   * @throws {404} - If the bookmark ID is not valid
    */
   router.delete(
     '/:bookmarkId?',
     [
-    //   userValidator.isUserLoggedIn,
-    //   freetValidator.isFreetExists,
-    //   freetValidator.isValidFreetModifier
+      userValidator.isUserLoggedIn,
+      bookmarkValidator.isBookmarkIdParamExists
     ],
     async (req: Request, res: Response) => {
       await BookmarkCollection.deleteOne(req.params.bookmarkId);

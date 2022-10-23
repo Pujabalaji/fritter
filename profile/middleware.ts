@@ -1,6 +1,5 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
-import UserCollection from 'user/collection';
 import ProfileCollection from '../profile/collection';
 
 /**
@@ -20,9 +19,49 @@ import ProfileCollection from '../profile/collection';
       }
     });
 };
+
+/**
+ * Check if current user has a profile with profileName provided in req.query
+ */
+const isQueryProfileNameExistsForCurrentUser = async(req: Request, res: Response, next: NextFunction) => {
+  const profileName = req.query.profileName;
+  if (!profileName) {
+    res.status(400).json({error: "Missing profileName in request"});
+  }
+  
+  console.log("profileName" + profileName);
+  const profile = await ProfileCollection.findOneByProfileNameAndUserId(profileName as string, req.session.userId as string);
+  
+  if (!profile) {
+    next()
+  } else {
+    res.status(404).json({error: "The profile name provided does not exist"});
+  }
+};
+
+/**
+ * Check if current user has a profile with profileName provided in req.body
+ */
+ const isBodyProfileNameExistsForCurrentUser = async(req: Request, res: Response, next: NextFunction) => {
+  const profileName = req.body.profileName;
+  if (!profileName) {
+    res.status(400).json({error: "Missing profileName in request"});
+  }
+  
+  const profile = await ProfileCollection.findOneByProfileNameAndUserId(profileName as string, req.session.userId as string);
+  
+  if (profile) {
+    next();
+  } else {
+    res.status(404).json({error: "The profile name provided does not exist"});
+  }
+  return;
+};
   
 export {
-    isProfileNameNotAlreadyInUse
+    isProfileNameNotAlreadyInUse,
+    isQueryProfileNameExistsForCurrentUser,
+    isBodyProfileNameExistsForCurrentUser
 };
   
   

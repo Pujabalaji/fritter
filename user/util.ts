@@ -7,7 +7,6 @@ import { isUsernameNotAlreadyInUse } from './middleware';
 type UserResponse = {
   _id: string;
   username: string;
-  // privateLike: string;
 };
 
 /**
@@ -36,7 +35,6 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    // privateLike: userCopy.privateLike.toString()
   };
 };
 

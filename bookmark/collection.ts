@@ -51,9 +51,7 @@ class BookmarkCollection {
    * @return {Promise<HydratedDocument<Bookmark>[]>} - An array of all of the bookmarks
    */
    static async findAllByProfileNameAndUserId(profileName: string, userId: string): Promise<Array<HydratedDocument<Bookmark>>> {
-    console.log("in findAllByProfileNameAndUserId in Bookmark");
     const profile = await ProfileCollection.findOneByProfileNameAndUserId(profileName, userId);
-    console.log("found a profile in findAllByProfileNameAndUserId Bookmark");
     return BookmarkModel.find({profileId: profile._id}).populate('freetId').populate('profileId');
   }
 
