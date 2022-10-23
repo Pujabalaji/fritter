@@ -3,6 +3,7 @@ import {HydratedDocument, Model, Types} from 'mongoose';
 import type {Profile} from './model';
 import ProfileModel from './model';
 import UserCollection from '../user/collection';
+import BookmarkCollection from '../bookmark/collection';
 
 class ProfileCollection {
 
@@ -55,11 +56,12 @@ class ProfileCollection {
     /**
      * Finding Profile given profile name and user id.
      *
-     * @param {string} profileName - The username of the user to find
-     * @param {string} userId - the userId of
-     * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+     * @param {string} profileName - The profile name of the profile to find
+     * @param {string} userId - the userId
+     * @return {Promise<HydratedDocument<Profile>> | Promise<null>} - The user with the given username, if any
      */
     static async findOneByProfileNameAndUserId(profileName: string, userId: string): Promise<HydratedDocument<Profile>> {
+        console.log("profileName", profileName);
         return ProfileModel.findOne({
         profileName: new RegExp(`^${profileName.trim()}$`, 'i'),
         userId: userId
@@ -84,19 +86,25 @@ class ProfileCollection {
      */
     static async deleteOne(profileName: string): Promise<boolean> {
         const profile = await ProfileCollection.findOneByProfileName(profileName);
-        console.log("found this profile");
-        console.log(profile._id);
         const deletedProfile = await ProfileModel.deleteOne({_id: profile._id});
+        await BookmarkCollection.deleteManyByProfileId(profile._id)
         return deletedProfile !== null;
     }
 
     /**
-   * Delete all the profiles beloging to given user.
+   * Delete all the profiles belonging to given user.
    *
    * @param {string} userId - The id of user with profiles
    */
   static async deleteMany(userId: Types.ObjectId | string): Promise<void> {
+    const user = await UserCollection.findOneByUserId(userId);
+    const profiles = await ProfileCollection.findAllByUsername(user.username);
     await ProfileModel.deleteMany({userId});
+
+    // Delete bookmarks belonging to each user profile
+    for (var profile of profiles) {
+        await BookmarkCollection.deleteManyByProfileId(profile._id);
+    } 
   }
 }
 

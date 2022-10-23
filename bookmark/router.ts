@@ -34,7 +34,6 @@ export {router as bookmarkRouter};
         return;
       }
   
-    //   console.log("profileName to find bookmarks of" + req.query.profileName);
       const allBookmarks = await BookmarkCollection.findAll();
       const response = allBookmarks.map(util.constructBookmarkResponse);
       res.status(200).json(response);
@@ -66,7 +65,7 @@ router.post(
     async (req: Request, res: Response) => {
       console.log("Making Bookmark POST Request in Router");
       const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-      console.log("req.body.profileName")
+      console.log("req.body.profileName" + req.body.profileName);
       const profile = await ProfileCollection.findOneByProfileNameAndUserId(req.body.profileName, userId);
       console.log("profile to add bookmark to " + profile.profileName);
       console.log(profile);

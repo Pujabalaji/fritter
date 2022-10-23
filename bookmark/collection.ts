@@ -16,7 +16,7 @@ class BookmarkCollection {
     const date = new Date();
     const bookmark = new BookmarkModel({
       freetId,
-      profileId,
+            profileId,
       dateAdded: date
     });
     await bookmark.save(); // Saves freet to MongoDB
@@ -51,7 +51,9 @@ class BookmarkCollection {
    * @return {Promise<HydratedDocument<Bookmark>[]>} - An array of all of the bookmarks
    */
    static async findAllByProfileNameAndUserId(profileName: string, userId: string): Promise<Array<HydratedDocument<Bookmark>>> {
+    console.log("in findAllByProfileNameAndUserId in Bookmark");
     const profile = await ProfileCollection.findOneByProfileNameAndUserId(profileName, userId);
+    console.log("found a profile in findAllByProfileNameAndUserId Bookmark");
     return BookmarkModel.find({profileId: profile._id}).populate('freetId').populate('profileId');
   }
 
@@ -71,10 +73,18 @@ class BookmarkCollection {
    *
    * @param {string} profileId - The id of profile bookmarks are saved to
    */
-   static async deleteMany(profileId: Types.ObjectId | string): Promise<void> {
+   static async deleteManyByProfileId(profileId: Types.ObjectId | string): Promise<void> {
     await BookmarkModel.deleteMany({profileId});
   }
 
+  /**
+   * Delete all the bookmarks containing given freetId
+   * 
+   * @param {string} freetId - The id of the freet bookmarked
+   */
+   static async deleteManyByFreetId(freetId: Types.ObjectId | string): Promise<void> {
+    await BookmarkModel.deleteMany({freetId});
+  }
 }
 
 export default BookmarkCollection;

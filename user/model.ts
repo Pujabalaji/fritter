@@ -13,7 +13,6 @@ export type User = {
   password: string;
   following: Array<Types.ObjectId>;
   profiles: Array<Types.ObjectId>;
-  privateLike: Boolean;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -28,11 +27,6 @@ const UserSchema = new Schema({
   // The user's password
   password: {
     type: String,
-    required: true
-  },
-  // user allows private like
-  privateLike: {
-    type: Boolean,
     required: true
   }
 }, {

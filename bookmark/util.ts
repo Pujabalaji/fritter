@@ -3,11 +3,11 @@ import moment from 'moment';
 import { Bookmark, PopulatedBookmark } from './model';
 import { format } from 'morgan';
 
-// Update this if you add a property to the User type!
+// Update this if you add a property to the Bookmark type!
 type BookmarkResponse = {
   _id: string;
   profileName: string;
-  content: string;
+  freet: string;
   dateAdded: string;
 };
 
@@ -32,13 +32,18 @@ const constructBookmarkResponse = (bookmark: HydratedDocument<Bookmark>): Bookma
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
+  console.log("bookmarkCopy.freetId" + bookmarkCopy.freetId);
+  console.log("bookmarkCopy.profileId" + bookmarkCopy.profileId);
+
   const {profileName} = bookmarkCopy.profileId;
+  delete bookmarkCopy.profileId;
   const {content} = bookmarkCopy.freetId;
+  delete bookmarkCopy.freetId;
   return {
-    // ...bookmarkCopy,
+    ...bookmarkCopy,
     _id: bookmarkCopy._id.toString(),
     profileName,
-    content,
+    freet: content,
     dateAdded: formatDate(bookmark.dateAdded)
   };
 };
