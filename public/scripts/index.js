@@ -42,7 +42,10 @@ const formsAndHandlers = {
   'view-all-followers': viewAllFollowers,
   'view-all-followees': viewAllFollowees,
   'add-follow': addFollow,
-  'delete-follow': deleteFollow
+  'delete-follow': deleteFollow,
+  'create-profile': createProfile,
+  'view-user-profiles': viewUserProfiles,
+  'delete-profile': deleteProfile
 };
 
 // Attach handlers to forms

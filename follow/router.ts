@@ -24,7 +24,6 @@ const router = express.Router();
       userValidator.isParameterUsernameExists
     ],
     async (req: Request, res: Response) => {
-      console.log("find users username follows")
       const followees = await FollowCollection.findAllFolloweesByUsername(req.params.username as string);
       const response = followees.map(util.constructFolloweeResponse);
       res.status(200).json(response);
@@ -75,9 +74,8 @@ const router = express.Router();
     const followee = await UserCollection.findOneByUsername(req.query.username as string);
     await FollowCollection.addOne(userId, followee._id);
 
-    console.log("You successfully followed!")
     res.status(200).json({
-      message: 'You successfully followed' + followee.username + "!",
+      message: 'You successfully followed ' + followee.username + "!",
     });
   }
 );

@@ -30,6 +30,9 @@ router.post(
     userValidator.isAccountExists
   ],
   async (req: Request, res: Response) => {
+    console.log("In user router, Creating new session:");
+    console.log("req.body.username" + req.body.username);
+    console.log("req.body.password" + req.body.password);
     const user = await UserCollection.findOneByUsernameAndPassword(
       req.body.username, req.body.password
     );

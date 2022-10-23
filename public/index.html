@@ -8,6 +8,7 @@
   <script src="/scripts/freet.js"></script>
   <script src="/scripts/user.js"></script>
   <script src="/scripts/follow.js"></script>
+  <script src="/scripts/profile.js"></script>
   <script src="/scripts/index.js"></script>
 </head>
 
@@ -82,8 +83,8 @@
         <form id="view-freets-by-author">
           <h3>View Freets By Author</h3>
           <div>
-            <label for="author">Author:</label>
-            <input id="author" name="author">
+            <label for="username">Author:</label>
+            <input id="username" name="username">
           </div>
           <input type="submit" value="View Freets By Author">
         </form>
@@ -153,6 +154,33 @@
             <input id="username" name="username">
           </div>
           <input type="submit" value="Delete Follow">
+        </form>
+
+        <form id="create-profile">
+          <h3>Create Profile</h3>
+          <div>
+            <label for="profileName">Profile Name:</label>
+            <input id="profileName" name="profileName">
+          </div>
+          <input type="submit" value="Create Profile">
+        </form>
+
+        <form id="view-user-profiles">
+          <h3>View User Profiles</h3>
+          <div>
+            <label for="username">Username:</label>
+            <input id="username" name="username">
+          </div>
+          <input type="submit" value="View User Profiles">
+        </form>
+
+        <form id="delete-profile">
+          <h3>Delete Profile</h3>
+          <div>
+            <label for="profileName">Profile Name:</label>
+            <input id="profileName" name="profileName">
+          </div>
+          <input type="submit" value="Delete Profile">
         </form>
 
       </div>
