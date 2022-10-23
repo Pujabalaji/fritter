@@ -45,7 +45,11 @@ const formsAndHandlers = {
   'delete-follow': deleteFollow,
   'create-profile': createProfile,
   'view-user-profiles': viewUserProfiles,
-  'delete-profile': deleteProfile
+  'delete-profile': deleteProfile,
+  'add-bookmark': addBookmark,
+  'view-all-bookmarks': viewAllBookmarks,
+  'view-bookmarks-by-profile': viewProfileBookmarks,
+  'delete-bookmark': deleteBookmark
 };
 
 // Attach handlers to forms
