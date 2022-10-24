@@ -14,11 +14,18 @@ function viewAllBookmarks(fields) {
     fetch('/api/bookmark')
       .then(showResponse)
       .catch(showResponse);
-  }
+}
+
 function viewProfileBookmarks(fields) {
-    fetch(`/api/bookmark?=${fields.profileName}`)
+    fetch(`/api/bookmark/${fields.profileName}`)
       .then(showResponse)
       .catch(showResponse);
+}
+
+function searchBookmarks(fields) {
+  fetch(`/api/bookmark/${fields.profileName}?keyword=${fields.keyword}`)
+    .then(showResponse)
+    .catch(showResponse);
 }
 
 function deleteBookmark(fields) {

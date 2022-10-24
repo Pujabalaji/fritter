@@ -32,8 +32,6 @@ const constructBookmarkResponse = (bookmark: HydratedDocument<Bookmark>): Bookma
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  console.log("bookmarkCopy.freetId" + bookmarkCopy.freetId);
-  console.log("bookmarkCopy.profileId" + bookmarkCopy.profileId);
 
   const {profileName} = bookmarkCopy.profileId;
   delete bookmarkCopy.profileId;

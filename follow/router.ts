@@ -6,8 +6,32 @@ import * as freetValidator from '../freet/middleware';
 import * as followValidator from '../follow/middleware';
 import * as util from './util';
 import UserCollection from '../user/collection';
+import { constructFreetResponse } from '../freet/util';
 
 const router = express.Router();
+
+/**
+ * Get the freets of the users who username follows. Username is the follower.
+ * Enables feed functionality, where feed is defined as freets of users a user follows.
+ * 
+ * @name GET /api/follow/feed?username
+ *
+ * @params {string} username - get the users who follow this username
+ * @return {FreetResponse[]} - An array of users followed by followerId
+ * @throws {400} - If followerId is not given
+ *
+ */
+ router.get(
+  '/feed',
+  [
+    // userValidator.isQueryUsernameExists
+  ],
+  async (req: Request, res: Response) => {
+    const freets = await FollowCollection.findAllFollowersFreetsByUsername(req.query.username as string);
+    const response = freets.map(constructFreetResponse);
+    res.status(200).json(response);
+  }
+);
 
 /**
  * Get users that username is following. This username is the follower.
@@ -69,7 +93,6 @@ const router = express.Router();
     followValidator.isUserFollowingSelf
   ],
   async (req: Request, res: Response) => {
-    console.log("im trying to post");
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const followee = await UserCollection.findOneByUsername(req.query.username as string);
     await FollowCollection.addOne(userId, followee._id);

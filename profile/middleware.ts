@@ -23,8 +23,8 @@ import ProfileCollection from '../profile/collection';
 /**
  * Check if current user has a profile with profileName provided in req.query
  */
-const isQueryProfileNameExistsForCurrentUser = async(req: Request, res: Response, next: NextFunction) => {
-  const profileName = req.query.profileName;
+const isParamsProfileNameExistsForCurrentUser = async(req: Request, res: Response, next: NextFunction) => {
+  const profileName = req.params.profileName;
   if (!profileName) {
     res.status(400).json({error: "Missing profileName in request"});
   }
@@ -60,7 +60,7 @@ const isQueryProfileNameExistsForCurrentUser = async(req: Request, res: Response
   
 export {
     isProfileNameNotAlreadyInUse,
-    isQueryProfileNameExistsForCurrentUser,
+    isParamsProfileNameExistsForCurrentUser,
     isBodyProfileNameExistsForCurrentUser
 };
   

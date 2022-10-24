@@ -22,18 +22,19 @@ export {router as bookmarkRouter};
 /**
  * Get bookmarks by profileName.
  *
- * @name GET /api/bookmark?profileName=id
+ * @name GET /api/bookmark/profileName=id
  *
  * @return {BookmarkResponse[]} - An array of freets created by user with id, authorId
  * @throws {400} - If profileName is not given
  * @throws {404} - If current user does not have profileName
- *
+ * 
  */
  router.get(
     '/',
     async (req: Request, res: Response, next: NextFunction) => {
-      // Check if username (author) query parameter was supplied
-      if (req.query.profileName !== undefined) {
+      console.log("in the top third");
+      // Check if username (author) parameter was supplied
+      if (req.params.profileName !== undefined) {
         next();
         return;
       }
@@ -41,17 +42,46 @@ export {router as bookmarkRouter};
       const allBookmarks = await BookmarkCollection.findAll();
       const response = allBookmarks.map(util.constructBookmarkResponse);
       res.status(200).json(response);
-    },
-    [
-      userValidator.isUserLoggedIn,
-      profileValidator.isQueryProfileNameExistsForCurrentUser
-    ],
-    async (req: Request, res: Response) => {
-      const profileBookmarks = await BookmarkCollection.findAllByProfileNameAndUserId(req.query.profileName as string, req.session.userId as string);
-      const response = profileBookmarks.map(util.constructBookmarkResponse);
-      res.status(200).json(response);
     }
-  );
+ );
+
+/**
+ * Get bookmarks by profileName and search for keyword.
+ *
+ * @name GET /api/bookmark/profileName=profileName?keyword=keyword
+ *
+ * @return {BookmarkResponse[]} - An array of freets created by user with id, authorId
+ * @throws {400} - If profileName is not given
+ * @throws {404} - If current user does not have profileName
+ * 
+ */
+ router.get(
+  '/:profileName?',
+  // [
+  //   userValidator.isUserLoggedIn,
+  //   profileValidator.isParamsProfileNameExistsForCurrentUser
+  // ],
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log("in the second third");
+    console.log("req.query.keyword" + req.query.keyword);
+    if (req.query.keyword !== undefined) {
+      next();
+      return;
+    }
+    const profileBookmarks = await BookmarkCollection.findAllByProfileNameAndUserId(req.params.profileName as string, req.session.userId as string);
+    const response = profileBookmarks.map(util.constructBookmarkResponse);
+    res.status(200).json(response);
+  },
+  [
+    bookmarkValidator.isQueryKeywordExists
+  ],
+  async (req: Request, res: Response) => {
+    console.log("in the last third");
+    const profileBookmarks = await BookmarkCollection.findAllByProfileNameAndUserIdAndKeyword(req.params.profileName as string, req.session.userId as string, req.query.keyword as string);
+    const response = profileBookmarks.map(util.constructBookmarkResponse);
+    res.status(200).json(response);
+  }
+);
 
   /**
  * Add a new bookmark.

@@ -10,6 +10,12 @@ function viewAllFollowees(fields) {
         .catch(showResponse);
 }
 
+function viewFolloweesFreets(fields) {
+    fetch(`/api/follow/feed?username=${fields.username}`, {method: 'GET'})
+        .then(showResponse)
+        .catch(showResponse);
+}
+
 function addFollow(fields) {
     fetch(`/api/follow?username=${fields.username}`, {method: 'POST'})
         .then(showResponse)

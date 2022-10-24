@@ -1,7 +1,9 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {Follow} from './model';
+import type {Freet} from '../freet/model';
 import FollowModel from './model';
 import UserCollection from '../user/collection';
+import FreetModel from '../freet/model';
 
 /**
 * This file contains a class with functionality to interact with users stored
@@ -29,7 +31,7 @@ class FollowCollection {
      * Find a follow by followId
      *
      * @param {string} followId - The id of the Follow relationship to find
-     * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The follow with the given followId, if any
+     * @return {Promise<HydratedDocument<Follow>> | Promise<null> } - The follow with the given followId, if any
      */
     static async findOne(followId: Types.ObjectId | string): Promise<HydratedDocument<Follow>> {
         return FollowModel.findOne({_id: followId}).populate(['followerId', 'followeeId']);
@@ -39,7 +41,7 @@ class FollowCollection {
    * Get all the followings where given username is the follower.
    *
    * @param {string} username - The username of the follower
-   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the following
+   * @return {Promise<HydratedDocument<Follow>[]>} - An array of all of the following
    */
   static async findAllFolloweesByUsername(username:string): Promise<Array<HydratedDocument<Follow>>> {
     const follower = await UserCollection.findOneByUsername(username); // get the user id of follower
@@ -50,11 +52,27 @@ class FollowCollection {
    * Get all the followings by given username is the followee.
    *
    * @param {string} username - The username of the followee
-   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the following
+   * @return {Promise<HydratedDocument<Follow>[]>} - An array of all of the following
    */
    static async findAllFollowersByUsername(username:string): Promise<Array<HydratedDocument<Follow>>> {
     const followee = await UserCollection.findOneByUsername(username); // get the user id of follower
     return FollowModel.find({followeeId: followee._id}).populate(['followerId', 'followeeId']);
+  }
+
+  /**
+   * Get all the freets by the user's given username follows.
+   * This means username is the follower.
+   *
+   * @param {string} username - The username of the follower
+   * @return {Promise<HydratedDocument<Follow>[]>} - An array of all of the following
+   */
+   static async findAllFollowersFreetsByUsername(username:string): Promise<Array<HydratedDocument<Freet>>> {
+    const follower = await UserCollection.findOneByUsername(username); // get the user id of follower
+    const follows = await FollowCollection.findAllFolloweesByUsername(follower.username);
+    const followeesIds = follows.map(follow => follow.followeeId._id);
+    console.log("followeesIds");
+    console.log(followeesIds);
+    return FreetModel.find({authorId: {$in: followeesIds}}).populate('authorId'); 
   }
 
   /**

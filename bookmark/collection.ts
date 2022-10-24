@@ -2,6 +2,8 @@ import type {HydratedDocument, Types} from 'mongoose';
 import { Bookmark } from './model';
 import BookmarkModel from './model';
 import ProfileCollection from '../profile/collection';
+import FreetCollection from 'freet/collection';
+import FreetModel from '../freet/model';
 
 
 class BookmarkCollection {
@@ -53,6 +55,22 @@ class BookmarkCollection {
    static async findAllByProfileNameAndUserId(profileName: string, userId: string): Promise<Array<HydratedDocument<Bookmark>>> {
     const profile = await ProfileCollection.findOneByProfileNameAndUserId(profileName, userId);
     return BookmarkModel.find({profileId: profile._id}).populate('freetId').populate('profileId');
+  }
+
+  /**
+   * Get all the bookmarks by given profile with keyword
+   *
+   * @param {string} profileName - The profileName of the profile that saved the tweet
+   * @param {string} userId - the id of the user that has profileName
+   * @param {string} keyword - the string to search for
+   * @return {Promise<HydratedDocument<Bookmark>[]>} - An array of all of the bookmarks
+   */
+  static async findAllByProfileNameAndUserIdAndKeyword(profileName: string, userId: string, keyword: string): Promise<Array<HydratedDocument<Bookmark>>> {
+    const profile = await ProfileCollection.findOneByProfileNameAndUserId(profileName, userId);
+    const escapeStringRegexp = require('escape-string-regexp');
+    const $regex = escapeStringRegexp(keyword);
+    const matchingFreetIds = await FreetModel.find({content: { $regex }})
+    return BookmarkModel.find({profileId: profile._id, freetId: {$in: matchingFreetIds}}).populate('freetId').populate('profileId');
   }
 
   /**
